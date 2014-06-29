@@ -1,5 +1,6 @@
 import sys
 import cwiid
+import time
 
 def main():
 	#Connect to address given on command-line, if present
@@ -13,27 +14,20 @@ def main():
 	wiimote.rpt_mode = cwiid.RPT_BALANCE | cwiid.RPT_BTN
 	wiimote.request_status()
 
-#	if wiimote.state['ext_type'] != cwiid.EXT_BALANCE:
-#		print 'This program only supports the Wii Balance Board'
-#		wiimote.close()
-#		return -1
-
 	balance_calibration = wiimote.get_balance_cal()
 	named_calibration = { 'right_top': balance_calibration[0],
 						  'right_bottom': balance_calibration[1],
 						  'left_top': balance_calibration[2],
 						  'left_bottom': balance_calibration[3],
 						}
-
-	exit = False
-	while not exit:
-		print "Type q to quit, or anything else to report your weight"
-		c = sys.stdin.read(1)
-		if c == 'q':
-			exit = True
+	while True:
+		#print "Type q to quit, or anything else to report your weight"
+		#c = sys.stdin.read(1)
+		#if c == 'q':
+		#	exit = True
 		wiimote.request_status()
 		print "%.2fkg" % (calcweight(wiimote.state['balance'], named_calibration) / 100.0, )
-
+		time.sleep(1)
 	return 0
 
 def calcweight( readings, calibrations ):
